@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>avl.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="avl-drevo">AVL drevo</h1>
+<p><code>Avtor: JakMar17</code>
+<br>
+<br></p>
+<h2 id="podatkovni-tip-avltree">Podatkovni tip &quot;avltree&quot;</h2>
+<p>AVL drevo je lahko:</p>
+<ul>
+<li>prazno</li>
+<li>ima podatke o višini, levem sinu in desnem sinu</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-keyword">type</span> visina = <span class="hljs-built_in">int</span>
+<span class="hljs-keyword">type</span> vrednost = <span class="hljs-built_in">int</span>
+
+<span class="hljs-keyword">type</span> avltree =
+| <span class="hljs-type">Empty</span>
+| <span class="hljs-type">Node</span> <span class="hljs-keyword">of</span> vrednost * visina * avltree * avltree
+</div></code></pre>
+<h4 id="primer-avl-drevesa">Primer avl drevesa</h4>
+<pre class="hljs"><code><div>    5
+   / \
+  3   8
+ / \
+1   4
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> t = 
+  <span class="hljs-type">Node</span> (<span class="hljs-number">5</span>, <span class="hljs-number">3</span>,
+    <span class="hljs-type">Node</span> (<span class="hljs-number">3</span>, <span class="hljs-number">2</span>, 
+      <span class="hljs-type">Node</span> (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-type">Empty</span>, <span class="hljs-type">Empty</span>),
+      <span class="hljs-type">Node</span> (<span class="hljs-number">4</span>, <span class="hljs-number">1</span>, <span class="hljs-type">Empty</span>, <span class="hljs-type">Empty</span>)
+    ),
+    <span class="hljs-type">Node</span>(<span class="hljs-number">8</span>, <span class="hljs-number">2</span>, <span class="hljs-type">Empty</span>, <span class="hljs-type">Empty</span>)
+  )
+</div></code></pre>
+<h3 id="funkcija-vi%C5%A1ina">Funkcija višina</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> visina = <span class="hljs-keyword">function</span>
+  | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-number">0</span>
+  | <span class="hljs-type">Node</span> (_, v, _, _) -&gt; v
+</div></code></pre>
+<h3 id="ustvarjanje-novega-lista-vozli%C5%A1%C4%8Da">Ustvarjanje novega lista, vozlišča</h3>
+<h4 id="lista">Lista</h4>
+<p>Funkcija naj ustvari nov list</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> <span class="hljs-built_in">list</span> v = <span class="hljs-type">Node</span> (v, <span class="hljs-number">1</span>, <span class="hljs-type">Empty</span>, <span class="hljs-type">Empty</span>)
+</div></code></pre>
+<h4 id="vozli%C5%A1%C4%8Da">Vozlišča</h4>
+<p>Funkcija ustvari novo vozlišče s sinovoma</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> node (vrednost, levi, desni) = 
+    <span class="hljs-type">Node</span> (vrednost, <span class="hljs-number">1</span>+ max(visina levi)(visina desni), levi, desni)
+
+</div></code></pre>
+<h2 id="drevo-%E2%87%92-seznam">Drevo ⇒ seznam</h2>
+<p><strong>Naloga:</strong> definirajte funkcijo toList: <code>avltree -&gt; int list</code>, ki elemente drevesa vrne kot urejen seznam števil. Za združevanje seznamov ima OCaml operator <code>@</code>.</p>
+<pre><code>Rekurzivne funkcije je v OCaml potrebno definirati z besedo &quot;let rec&quot;
+</code></pre>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> toList = <span class="hljs-keyword">function</span>
+  | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-literal">[]</span>
+  | (<span class="hljs-type">Node</span>(x, _, l, d)) -&gt; toList l @ [x] @ toList d
+</div></code></pre>
+<h2 id="iskanje">Iskanje</h2>
+<p>Algoritem, ki ugotovi, ali je dani x v drevesu t:</p>
+<ul>
+<li>če je t prazno drevo, se x ne pojavi;</li>
+<li>če je t vozlišče z vsebino y in poddrevesoma l ter r:
+<ul>
+<li>če je x = y, se x pojavi;</li>
+<li>če je x &lt; y, iščemo v poddrevesu l;</li>
+<li>če je x &gt; y, iščemo v poddrevesu r.</li>
+</ul>
+</li>
+</ul>
+<p><em>Najprej definiramo metodo za primerjavo dveh int znakov</em></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">type</span> order = <span class="hljs-type">Manj</span> | <span class="hljs-type">Enako</span> | <span class="hljs-type">Vec</span>
+
+<span class="hljs-keyword">let</span> primerjaj x y =
+  <span class="hljs-keyword">match</span> compare x y <span class="hljs-keyword">with</span>
+    | <span class="hljs-number">0</span> -&gt; <span class="hljs-type">Enako</span>
+    | r <span class="hljs-keyword">when</span> r &lt; <span class="hljs-number">0</span> -&gt; <span class="hljs-type">Manj</span>
+    | _ -&gt; <span class="hljs-type">Vec</span>
+</div></code></pre>
+<p><strong>Rekurzivno iskanje</strong> - vrača true/false</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> iskanje v = <span class="hljs-keyword">function</span>
+  | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-literal">false</span>
+  | (<span class="hljs-type">Node</span> (vrednost, _, l, d)) -&gt;
+      <span class="hljs-keyword">begin</span> <span class="hljs-keyword">match</span> primerjaj v vrednost <span class="hljs-keyword">with</span>
+        | <span class="hljs-type">Enako</span> -&gt; <span class="hljs-literal">true</span>
+        | <span class="hljs-type">Manj</span> -&gt; iskanje v l
+        | <span class="hljs-type">Vec</span> -&gt; iskanje v d
+      <span class="hljs-keyword">end</span>
+</div></code></pre>
+<h2 id="vrtenje-in-uravnote%C5%BEenje">Vrtenje in uravnoteženje</h2>
+<h3 id="neuraunote%C5%BEenost-drevesa">Neuraunoteženost drevesa</h3>
+<p><strong>Naloga:</strong> definirajte funkcijo <code>imbalance: avltree -&gt; int</code>, ki vrne stopnjo neuravnoteženosti drevesa, tj. razliko med višinama levega in desnega poddrevesa.</p>
+<pre class="hljs"><code><div><span class="hljs-comment">(*od prej:*)</span>
+<span class="hljs-keyword">let</span> visina = <span class="hljs-keyword">function</span>
+  | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-number">0</span>
+  | <span class="hljs-type">Node</span> (_, v, _, _) -&gt; v
+
+<span class="hljs-comment">(*na novo:*)</span>
+<span class="hljs-keyword">let</span> imbalance = <span class="hljs-keyword">function</span>
+      | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-number">0</span>
+      | <span class="hljs-type">Node</span>(_, _, l, d) -&gt; visina l - visina d
+</div></code></pre>
+<h3 id="uravnote%C5%BEenje-drevesa">Uravnoteženje drevesa</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> rotacijaLevo = <span class="hljs-keyword">function</span>
+    | <span class="hljs-type">Node</span> (x, _, a, <span class="hljs-type">Node</span>(y, _, b, c)) -&gt; node (y, node(x, a, b), c)
+    | t -&gt; t
+
+<span class="hljs-keyword">let</span> rotacijaDesno = <span class="hljs-keyword">function</span>
+    | <span class="hljs-type">Node</span> (y, _, <span class="hljs-type">Node</span>(x, _, a, b), c) -&gt; node (x, a, node(y, b, c))
+    | t -&gt; t
+
+<span class="hljs-keyword">let</span> uravnotezi = <span class="hljs-keyword">function</span>
+    | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-type">Empty</span>
+    | <span class="hljs-type">Node</span> (x, _, l, d) <span class="hljs-keyword">as</span> t -&gt;
+      <span class="hljs-keyword">begin</span> <span class="hljs-keyword">match</span> imbalance l <span class="hljs-keyword">with</span>
+      | <span class="hljs-number">2</span> -&gt;
+        <span class="hljs-keyword">begin</span> <span class="hljs-keyword">match</span> imbalance l <span class="hljs-keyword">with</span>
+          | -<span class="hljs-number">1</span> -&gt; rotacijaDesno (node (x, rotacijaLevo l, d))
+          | _ -&gt; rotacijaDesno t
+          <span class="hljs-keyword">end</span>
+      | -<span class="hljs-number">2</span> -&gt;
+          <span class="hljs-keyword">begin</span> <span class="hljs-keyword">match</span> imbalance d <span class="hljs-keyword">with</span>
+            | <span class="hljs-number">1</span> -&gt; rotacijaLevo(node (x, l, rotacijaDesno d))
+            | _ -&gt; rotacijaLevo t
+            <span class="hljs-keyword">end</span>
+      | _ -&gt; t
+      <span class="hljs-keyword">end</span>
+</div></code></pre>
+<h3 id="dodajanje-elementa-v-drevo">Dodajanje elementa v drevo</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> dodaj x = <span class="hljs-keyword">function</span>
+    | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-built_in">list</span> x
+    | <span class="hljs-type">Node</span> (y, _, l, d) <span class="hljs-keyword">as</span> t -&gt;
+        <span class="hljs-keyword">begin</span> <span class="hljs-keyword">match</span> primerjaj x y <span class="hljs-keyword">with</span>
+          | <span class="hljs-type">Enako</span> -&gt; t
+          | <span class="hljs-type">Manj</span> -&gt; uravnotezi (node (y, dodaj x l, d))
+          | <span class="hljs-type">Vec</span> -&gt; uravnotezi (node (y, l, dodaj x d))
+    <span class="hljs-keyword">end</span>
+</div></code></pre>
+<h3 id="odstranjevanje-elementa-iz-drevesa">Odstranjevanje elementa iz drevesa</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> odstrani x = <span class="hljs-keyword">function</span>
+    | <span class="hljs-type">Empty</span> -&gt; <span class="hljs-type">Empty</span>
+    | <span class="hljs-type">Node</span> (y, _, l, d) -&gt;
+      <span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> odstraniNaslednika = <span class="hljs-keyword">function</span>
+        | <span class="hljs-type">Empty</span> -&gt; failwith <span class="hljs-string">"Ne morem"</span>
+        | <span class="hljs-type">Node</span> (x, _, <span class="hljs-type">Empty</span>, d) -&gt; (d, x)
+        | <span class="hljs-type">Node</span> (x, _, l, d) -&gt;
+          <span class="hljs-keyword">let</span> (l', y) = odstraniNaslednika l <span class="hljs-keyword">in</span>
+            (uravnotezi (node (x, l', d)), y)
+        <span class="hljs-keyword">in</span>
+        <span class="hljs-keyword">match</span> primerjaj x y <span class="hljs-keyword">with</span>
+          | <span class="hljs-type">Manj</span> -&gt; uravnotezi (node (y, odstrani x l, d))
+          | <span class="hljs-type">Vec</span> -&gt; uravnotezi (node (y, l, odstrani x d))
+          | <span class="hljs-type">Enako</span> -&gt;
+            <span class="hljs-keyword">begin</span> <span class="hljs-keyword">match</span> (l, d) <span class="hljs-keyword">with</span>
+              | (_, <span class="hljs-type">Empty</span>) -&gt; l
+              | (<span class="hljs-type">Empty</span>, _) -&gt; d
+              | _ -&gt; <span class="hljs-keyword">let</span> (d', y') = odstraniNaslednika d <span class="hljs-keyword">in</span>
+                uravnotezi (node (y', l, d'))
+              <span class="hljs-keyword">end</span>
+</div></code></pre>
+
+</body>
+</html>
